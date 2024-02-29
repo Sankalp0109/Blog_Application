@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             defaultValue: "",
           },
-          category: {
-            type: DataTypes.STRING,
+          CategoryId: {
+            type: DataTypes.INTEGER,
             allowNull: false,
           },
           image: {
@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
           },
           
     });
+    BlogPost.associate = (models) => {
+      BlogPost.belongsTo(models.Category, {
+        foreignKey: 'CategoryId', 
+      });
+    };
     
     return BlogPost;
 };

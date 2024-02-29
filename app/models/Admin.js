@@ -35,9 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     Admin.hasMany(models.BlogPost, {
       onDelete: "cascade",
     });
-    // Admin.hasMany(models.AuditLog, { 
-    //   foreignKey: 'UserId', as: 'Logs' 
-    // });
+    
   };
 
   return Admin;
