@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blogger.com</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500&family=Roboto+Slab:wght@400;500&display=swap"
+    rel="stylesheet">
+</head>
+
+<body class="bg-light" style="font-family:'Roboto Slab', serif;">
+  <%- include('Navbar') -%>
+    <div class="w-100 d-flex flex-column">
+      <div class="w-100 d-flex justify-content-center" style="margin-top: 80px;">
+        <div class="container my-4">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">UserName</th>
+                <th scope="col">Email</th>
+                <th scope="col">Admin</th>
+                <th scope="col">Delete User</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach((user, index)=> { %>
+                
+                <tr>
+                  <th scope="row">
+                    <%= index + 1 %>
+                  </th>
+                  <td>
+                    <%= user.Name %>
+                  </td>
+                  <td>
+                    <%= user.email %>
+                  </td>
+                  <%if(user?.email != session?.user?.email){%>
+                    <td>
+                      
+                             <% if ((user?.isAdmin)) { %>
+                                <a href="javascript:void(0);" onclick="confirmAction('toggle', <%= user.AdminId %>,'<%= user.Name %>')" class="btn btn-primary">Admin</a>
+                              <% } else { %>
+                                 <a href="javascript:void(0);" onclick="confirmAction('toggle', <%= user.AdminId %>,'<%= user.Name %>')"class="btn btn-secondary">Make Admin</a>
+                              <% } %>
+
+                    </td>
+                  <td>
+                    <a href="javascript:void(0);"  onclick="confirmAction('delete', <%= user.AdminId %>,'<%= user.Name %>')" class="btn btn-danger">Delete</a>
+                  </td>
+                  <%}else{%>
+                    <td></td>
+                    <td></td>
+                    <%}%>
+                </tr>
+                <% }); %>
+            </tbody>
+          </table>
+        </div>
+        
+      </div>
+      <div class="my-auto">
+        <%- include('Footer') -%>
+      </div>
+    </div>
+    <script>
+      function confirmAction(action, userId,name) {
+        var confirmation;
+        if(action == 'delete'){
+          confirmation = confirm(`Are you sure you want to ${action} ${name} ?`);
+        }
+        else{
+          confirmation = confirm(`Are you sure you want to make ${name} Admin?`);
+        }
+    
+        if (confirmation) {
+          window.location.href = `/edituser/${userId}?action=${action}`;
+        }
+      }
+    </script>
+    
+</body>
+
+</html>

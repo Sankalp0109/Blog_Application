@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blogger.com</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500&family=Roboto+Slab:wght@400;500&display=swap"
+    rel="stylesheet">
+    
+     
+</head>
+
+<body class="bg-light" style="font-family:'Roboto Slab', serif;">
+  <%- include('Navbar') -%>
+  <% if (messages.length > 0) { %>
+    <div class="alert alert-danger " style="transition: opacity 0.5s ease-in-out;" role="alert" id="flashMessage">
+      
+        <% messages.forEach(message => { %>
+          <%= message %>
+        <% }); %>
+      
+    </div>
+  <% } %>
+
+    <!-- <% if (session && session?.user?.dataValues?.email) { %>
+    <h1>Welcome, <%= session?.user?.dataValues?.email %>!</h1>
+  <% } %> -->
+
+
+
+    <div class="container my-4 ">
+      <div class="row row-cols-1 row-cols-md-3 g-4" id="all-post">
+
+      </div>
+
+    </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center " id="pagination">
+        <!-- <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Previous</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" >Next</a>
+      </li> -->
+      </ul>
+    </nav>
+
+    <%- include('Footer') -%>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+
+      <script>
+        window.onload = function getAllPost() {
+          let currentPage = 1;
+          const postsPerPage = 6;
+          let totalPosts;
+
+          function fetchAndRenderPosts() {
+            fetch(`http://localhost:3001/post/?page=${currentPage}&limit=${postsPerPage}`)
+              .then((res) => res.json())
+              .then((res) => {
+                // totalPosts = res.total; 
+                // const posts = res.posts.map((post) => {
+                //   return `<div class="col" data-post-id="${post.postId}">
+                //       <div class="card shadow h-100">
+                //         <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top"
+                //           alt="Wrong Path">
+                //         <div class="card-body" style="height: 150px; overflow: hidden;">
+                //           <h5 class="card-title"><b>${post.title}</b></h5>
+                //           <p class="card-text">${post.content}</p>
+                //         </div>
+                //       </div>
+                //     </div>`;
+                // });
+                // console.log(res);
+                // document.getElementById('all-post').innerHTML = posts.join('');
+                totalPosts = res.total;
+                const allPostsDiv = document.getElementById('all-post');
+                allPostsDiv.innerHTML = '';
+
+                res.posts.forEach((post) => {
+                  const postDiv = document.createElement('div');
+                  postDiv.className = 'col';
+                  postDiv.setAttribute('data-post-id', post.postId);
+
+                  postDiv.innerHTML = `
+          <div class="card shadow h-100">
+            <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top" alt="Wrong Path">
+            <div class="card-body" style="height: 150px; overflow: hidden;">
+              <h5 class="card-title"><b>${post.title}</b></h5>
+              <p class="card-text">${post.content}</p>
+            </div>
+          </div>
+        `;
+
+                  allPostsDiv.appendChild(postDiv);
+                });
+                updatePagination();
+              });
+          }
+
+          fetchAndRenderPosts();
+
+
+          document.getElementById('pagination').addEventListener('click', function (event) {
+            const target = event.target;
+
+            if (target.classList.contains('page-link')) {
+              const page = parseInt(target.innerText);
+
+              if (!isNaN(page) && page >= 1 && page <= Math.ceil(totalPosts / postsPerPage)) {
+                currentPage = page;
+                fetchAndRenderPosts();
+                updatePagination();
+              }
+            }
+          });
+          document.getElementById('all-post').addEventListener('click', function (event) {
+            const cardElement = event.target.closest('.card');
+            if (cardElement) {
+              const postId = cardElement.parentElement.getAttribute('data-post-id');
+              if (postId) {
+                window.location.href = `/post/byid/${postId}`;
+              }
+            }
+          });
+
+
+          function updatePagination() {
+            const totalPages = Math.ceil(totalPosts / postsPerPage);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+
+            const previousLi = document.createElement('li');
+            previousLi.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
+            previousLi.innerHTML = `<a class="page-link"  tabindex="-1">Previous</a>`;
+            previousLi.addEventListener('click', function () {
+              if (currentPage > 1) {
+                currentPage--;
+                fetchAndRenderPosts();
+                updatePagination();
+              }
+            });
+            paginationElement.appendChild(previousLi);
+
+            for (let i = 1; i <= totalPages; i++) {
+              const li = document.createElement('li');
+              li.className = 'page-item' + (i === currentPage ? ' active' : '');
+              li.innerHTML = `<a class="page-link" href="#" >${i}</a>`;
+              li.addEventListener('click', function () {
+                currentPage = i;
+                fetchAndRenderPosts();
+                updatePagination();
+              });
+              paginationElement.appendChild(li);
+            }
+
+            const nextLi = document.createElement('li');
+            nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
+            nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+            nextLi.addEventListener('click', function () {
+              if (currentPage < totalPages) {
+                currentPage++;
+                fetchAndRenderPosts();
+                updatePagination();
+              }
+            });
+            paginationElement.appendChild(nextLi);
+          }
+        }
+        
+        setTimeout(function() {
+          const flashMessage = document.getElementById('flashMessage');
+          if (flashMessage) {
+            flashMessage.style.opacity = '0';
+            setTimeout(function() {
+              flashMessage.style.display = 'none';
+            }, 1000);
+          }
+        }, 2000);
+      </script>
+</body>
+
+</html>
