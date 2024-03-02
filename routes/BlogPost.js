@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 router.get("/", postControllers.getAllPost);
 router.get('/byid/:postId', postControllers.getPostById);
 router.get('/bytag/:tag', postControllers.getPostByTag);
-router.get('/bycategory/:category', postControllers.getPostByCategory);
+router.get('/bycategory/:catId', postControllers.getPostByCategory);
 router.use(validateUser);
 router.post("/create",upload.single('image'), postControllers.createBlogPost);
 router.post('/update/:postId',checkPermission,postControllers.saveLog('UPDATE'), postControllers.updatePostById);

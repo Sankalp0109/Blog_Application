@@ -49,14 +49,16 @@ app.use((req, res, next) => {
    next();
  });
 const AdminRouter = require("./routes/Admin");
-app.use("/", AdminRouter);
 const blogPostRouter = require("./routes/BlogPost");
+const CategoryRouter = require('./routes/Category');
+app.use("/", AdminRouter);
+app.use('/category',CategoryRouter);
 app.use("/post", blogPostRouter);
 app.get("/login",(req,res)=>{
    res.render('Login.ejs',{ messages: req.flash('error') });
 });
 app.get("/",(req,res)=>{
-   res.render('Home.ejs',{ messages: req.flash('message') });
+   res.render('Home.ejs',{ messages: req.flash('message'), status: req.flash('success-message')});
 });
 app.get("/home",(req,res)=>{
    res.render('Home.ejs',{ messages: req.flash('message') });

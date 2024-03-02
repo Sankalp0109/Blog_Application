@@ -20,9 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "cascade",
     });
   };
-
-
-  return Category;
+return Category;
 };
 
 

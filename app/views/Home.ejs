@@ -27,6 +27,15 @@
       
     </div>
   <% } %>
+  <% if (status.length > 0) { %>
+    <div class="alert alert-success " style="transition: opacity 0.5s ease-in-out;" role="alert" id="flashMessage">
+      
+        <% status.forEach(message => { %>
+          <%= message %>
+        <% }); %>
+      
+    </div>
+  <% } %>
 
     <!-- <% if (session && session?.user?.dataValues?.email) { %>
     <h1>Welcome, <%= session?.user?.dataValues?.email %>!</h1>
@@ -61,6 +70,7 @@
 
 
       <script>
+        document.addEventListener("DOMContentLoaded", function () {
         window.onload = function getAllPost() {
           let currentPage = 1;
           const postsPerPage = 6;
@@ -70,6 +80,7 @@
             fetch(`http://localhost:3001/post/?page=${currentPage}&limit=${postsPerPage}`)
               .then((res) => res.json())
               .then((res) => {
+                console.log(res);
                 // totalPosts = res.total; 
                 // const posts = res.posts.map((post) => {
                 //   return `<div class="col" data-post-id="${post.postId}">
@@ -190,6 +201,7 @@
             }, 1000);
           }
         }, 2000);
+      });
       </script>
 </body>
 

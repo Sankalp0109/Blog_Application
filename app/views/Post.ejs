@@ -10,6 +10,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500&family=Roboto+Slab:wght@400;500&display=swap"
         rel="stylesheet">
@@ -35,7 +36,8 @@
                     </li> -->
 
                 <p>
-                    <%= post.content %>
+                    <%- post.content %>
+                    
                 </p>
 
                 <div class="d-flex align-self-end">
@@ -77,7 +79,7 @@
                     <% } %>
         </div>
         <%=console.log(session?.user)%>
-        <%=console.log(post?.AdminAdminId)%>
+            <%=console.log(post?.AdminAdminId)%>
 
 
                 <!-- <div class="d-flex justify-content-around">
@@ -110,6 +112,7 @@
                                     deletePost();
                                 }
                             });
+                           
                         });
                         function deletePost() {
                             // Use fetch to send a DELETE request

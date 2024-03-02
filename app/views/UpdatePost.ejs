@@ -11,68 +11,54 @@
 
 <body class="bg-light">
     <%- include('Navbar') -%>
-    <div class="container mt-5 d-flex justify-content-center">
-        <div class="w-50 border rounded bg-dark shadow-lg">
-            <form class="m-5" method="post" enctype="application/x-www-form-urlencoded" id="blogForm">
-                <% if (message) { %>
-          
-                    <div class="alert alert-success" role="alert">
-                      <h6 class="alert-heading"><%=message%> </h6>
-                    </div>
-                <% } %>
-                <div class="mb-3">
-                    <label for="title" class="form-label text-white">Title</label>
-                    <input type="text" class="form-control" name="title" placeholder="Enter title" id="title" required>
-                </div>
-                <div class="mb-3">
-                    <img id="post-image">
-                </div>
-                <div class="mb-3">
-                    <label for="imgurl" class="form-label text-white">Image URL</label>
-                    <input type="file" class="form-control" name="image" id="image" accept=".jpg, .jpeg, .png" required>
-                </div>
-                <div class="mb-3">
-                    <label for="catg" class="form-label text-white">Choose a Category:</label>
-                    <select name="category" class="form-control">
-                        <option value="Technology">Technology</option>
-                        <option value="Lifestyle">Lifestyle</option>
-                        <option value="Nature">Nature</option>
-                        <option value="Wildlife">Wildlife</option>
-                        <option value="Sports">Sports</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="title" class="form-label text-white">Tags</label>
-                    <input type="text" class="form-control" name="tags"
-                        placeholder="Enter Comma Separated values Ex: Football,Cricket etc" id="tags" required>
-                </div>
-                <div class="mb-3">
-                    <label for="des" class="form-label text-white">Content</label>
-                    <textarea class="form-control" name="content" placeholder="Enter Content" rows="4" id="content"
-                        required></textarea>
-                </div>
-                <button type="submit" class="btn btn-warning">Update Blog</button>
-            </form>
-        </div>
-    </div>
-    <script>
-        var uploadField = document.getElementById("image");
+        <div class="container mt-5 d-flex justify-content-center">
+            <div class="w-100 border rounded bg-light shadow-lg">
+                <form class="m-5" method="post" enctype="application/x-www-form-urlencoded" id="blogForm">
+                    <% if (message) { %>
 
-        uploadField.onchange = function () {
-            if (this.files[0].size > 3 * 1024 * 1024) {
-                alert("File is too big!");
-                this.value = "";
-            };
-            var filePath = uploadField.value;
-            var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-            if (!allowedExtensions.exec(filePath)) {
-                alert('Invalid file type');
-                this.value = "";
-            }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <%-include('Footer')-%>
+                        <div class="alert alert-success" role="alert">
+                            <h6 class="alert-heading">
+                                <%=message%>
+                            </h6>
+                        </div>
+                        <% } %>
+                            <div class="mb-3">
+                                <label for="title" class="form-label text-white">Title</label>
+                                <input type="text" class="form-control" name="title" placeholder="Enter title"
+                                    id="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <img id="post-image">
+                            </div>
+                            <div class="mb-3">
+                                <label for="imgurl" class="form-label text-white">Image URL</label>
+                                <input type="file" class="form-control" name="image" id="image"
+                                    accept=".jpg, .jpeg, .png" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="catg" class="form-label text-black">Choose a Category:</label>
+                                <select name="category" class="form-control" id="all-category">
+
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label text-white">Tags</label>
+                                <input type="text" class="form-control" name="tags"
+                                    placeholder="Enter Comma Separated values Ex: Football,Cricket etc" id="tags"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="des" class="form-label text-black">Content</label>
+                                <textarea class="form-control" name="content" placeholder="Enter Content" rows="4"
+                                    id="content" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Update Blog</button>
+                </form>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <%-include('Footer')-%>
 </body>
 <script>
     window.onload = function getData() {
@@ -100,8 +86,35 @@
                     document.getElementById('post-image').src = `http://localhost:3001/${data.image}`;
                     //document.getElementById('title').value = data.title;
                 }));
-        
+        fetch(`http://localhost:3001/category/`)
+            .then((res) => res.json())
+            .then((res) => {
+                console.log(res);
+                const categorySelect = document.getElementById('all-category');
+                res.forEach((cat) => {
+                    const option = document.createElement('option');
+                    option.setAttribute('value', cat.CotegoryId);
+                    option.innerHTML = `${cat.CategoryName}`;
+                    categorySelect.appendChild(option);
+                });
+
+            })
+
     }
+    var uploadField = document.getElementById("image");
+
+    uploadField.onchange = function () {
+        if (this.files[0].size > 3 * 1024 * 1024) {
+            alert("File is too big!");
+            this.value = "";
+        };
+        var filePath = uploadField.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            this.value = "";
+        }
+    };
     document.getElementById('image').addEventListener('change', handleImageSelection);
 
     function handleImageSelection(event) {

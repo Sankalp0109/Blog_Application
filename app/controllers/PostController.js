@@ -10,7 +10,7 @@ const createBlogPost = async (req, res) => {
     content: content,
     tags: tags,
     AdminAdminId: req.session.user.AdminId,
-    category: category,
+    CategoryId: category,
     image: req.file.filename,
   });
   await AuditLog.create({
@@ -18,8 +18,8 @@ const createBlogPost = async (req, res) => {
     Action: 'CREATE',
     PostId: post.postId,
 });
-  
-  res.render('CreatePost', { message: "Post Created Successfully", user: req.session.user });
+  req.flash('success-message', "Post Created Successfully");
+  res.redirect('/');
 };
 
 const getAllPost = async (req, res) => {
@@ -121,18 +121,16 @@ const deletePostById = async (req, res) => {
 }
 
 const getPostByCategory = async (req, res) => {
-  const category = req.params.category;
+  const id = req.params.catId;
 
   try {
     const postsWithCategory = await BlogPost.findAll({
       where: {
-        category: {
-          [Op.like]: `%${category}%`,
-        },
+        CategoryId: id
       },
     });
 
-    res.render('AllPost', { posts: postsWithCategory, category: category });
+    res.render('AllPost', { posts: postsWithCategory, category: "category" });
   } catch (error) {
     console.error('Error fetching posts by tag:', error);
     res.status(500).json({ error: 'Internal Server Error' });
