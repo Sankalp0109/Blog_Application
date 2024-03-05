@@ -1,3 +1,7 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
 <nav class="navbar  shadow navbar-expand-lg bg-light width-100">
   <div class="container-fluid">
     <img src="https://i.ibb.co/prH5Msb/572-2.png" class="my-2 mx-2" style="width: 150px" />
@@ -15,12 +19,7 @@
             Category
           </a>
           <ul class="dropdown-menu" id="all-cat">
-            <!-- <div id="lifestyle"> dsfadsf</div> -->
-            <!-- <li><a class="dropdown-item" href="http://localhost:3001/post/bycategory/technology">Technology</a></li>
-            <li><a class="dropdown-item" href="http://localhost:3001/post/bycategory/lifestyle">Lifestyle</a></li>
-            <li><a class="dropdown-item" href="http://localhost:3001/post/bycategory/wildlife">Wildlife</a></li>
-            <li><a class="dropdown-item" href="http://localhost:3001/post/bycategory/nature">Nature</a></li>
-            <li><a class="dropdown-item" href="http://localhost:3001/post/bycategory/sports">Sports</a></li> -->
+
           </ul>
         </li>
         <% if (session?.user?.isAdmin) { %>
@@ -40,7 +39,7 @@
               </li>
             </ul>
           </li>
-          
+
           <% } %>
 
 
@@ -91,7 +90,6 @@
       fetch(`http://localhost:3001/category/`)
         .then((res) => res.json())
         .then((res) => {
-          console.log(res);
           const categorySelect = document.getElementById('all-cat');
           res.forEach((cat) => {
             const li = document.createElement('li');
@@ -105,6 +103,8 @@
 
         })
     }
-    loadCategory();
+    
+    
+  loadCategory();
   });
 </script>

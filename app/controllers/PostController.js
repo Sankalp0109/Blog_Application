@@ -1,8 +1,11 @@
-const { BlogPost, Admin, AuditLog} = require('../models');
+const { BlogPost, Admin, AuditLog, Comment} = require('../models');
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
+const iv = crypto.randomBytes(16);
+const key = crypto.randomBytes(32);
+const algorithm = "aes-256-cbc";
 const createBlogPost = async (req, res) => {
   const { title, content, tags, category } = req.body;
   const post = await BlogPost.create({
@@ -55,18 +58,20 @@ const getAllPost = async (req, res) => {
 const getPostById = async (req, res) => {
   const postId = req.params.postId;
   try {
-    const post = await BlogPost.findByPk(postId);
+    const post = await BlogPost.findByPk(postId,{
+      include: [Comment,Admin]
+    });
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
     res.locals.session = req.session;
-    const admin = await Admin.findOne({ where: { AdminId: post.AdminAdminId } });
+    //const admin = await Admin.findOne({ where: { AdminId: post.AdminAdminId } });
     if (req.query.format === 'json') {
       res.json(post);
     } else {
-      res.render('Post', { post: post, isAuth: req.session.isAuthenticated, writer: admin.Name,});
+      res.render('Post', { post: post, isAuth: req.session.isAuthenticated,});
     }
   } catch (error) {
     console.error('Error fetching post:', error);
@@ -203,43 +208,6 @@ const getAuditLogs =  (req,res)=>{
     });
 }
 
-
-// // Encryption function
-// const encrypt = (text) => {
-//   const algorithm = 'aes-256-cbc';
-//   const key = crypto.randomBytes(32);
-//   const iv = crypto.randomBytes(16);
-
-//   const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-//   let encrypted = cipher.update(text, 'utf-8', 'hex');
-//   encrypted += cipher.final('hex');
-
-//   return {
-//     iv: iv.toString('hex'),
-//     key: key.toString('hex'),
-//     encryptedText: encrypted,
-//   };
-// };
-
-// // Decryption function
-// const decrypt = (encryptedData) => {
-//   const algorithm = 'aes-256-cbc';
-//   const key = Buffer.from(encryptedData.key, 'hex');
-//   const iv = Buffer.from(encryptedData.iv, 'hex');
-
-//   const decipher = crypto.createDecipheriv(algorithm, key, iv);
-//   let decrypted = decipher.update(encryptedData.encryptedText, 'hex', 'utf-8');
-//   decrypted += decipher.final('utf-8');
-
-//   return decrypted;
-// };
-
-// // Example usage:
-
-const iv = crypto.randomBytes(16);
-const key = crypto.randomBytes(32);
-const algorithm = "aes-256-cbc";
-// encryption
 function encrypt(text) {
   const cipher = crypto.createCipheriv(algorithm, key, iv);
   let encrypted = cipher.update(text, "utf8", "hex");
@@ -266,6 +234,68 @@ function decrypt(encryptedText) {
 // console.log('Decrypted Text:', decryptedText);
 
 
+const addComment = async (req,res)=>{
+  const blogId = req.params.id;
+  const {name, comment} = req.body;
+  await Comment.create({
+    name:name,
+    comment:comment,
+    BlogPostPostId:blogId
+  });
+  return res.redirect(`/post/byid/${blogId}`);
+}
+const getCommentsByBlogPostId = async (req,res) => {
+  const blogPostId = req.params.id;
+  try {
+    const blogPostWithComments = await BlogPost.findByPk(blogPostId, {
+      include: [Comment,Admin]
+    });
+
+    if (!blogPostWithComments) {
+      console.log(`BlogPost with id ${blogPostId} not found.`);
+      return null;
+    }
+
+    //const comments = blogPostWithComments.Comments;
+    // return comments;
+    res.render(blogPostWithComments);
+  } catch (error) {
+    console.error('Error retrieving comments:', error);
+    throw error;
+  }
+};
+
+const setCommentVisibility = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    const commentId = req.query.comment;
+    const comment = await Comment.findByPk(commentId);
+    console.log(blogId);
+    console.log(commentId);
+    console.log(comment);
+
+    if (!comment) {
+      return res.status(404).json({ error: 'comment not found' });
+    }
+
+    const action = req.query.action;
+
+    if (action === 'delete') {
+      await comment.destroy();
+      return res.redirect(`/post/byid/${blogId}`);
+    } else if (action === 'toggle') {
+      await comment.update({ isApproved: !comment.isApproved });
+      return res.redirect(`/post/byid/${blogId}`);
+    } else {
+      return res.status(400).json({ error: 'Invalid action' });
+    }
+  } catch (error) {
+    console.error('Error managing comment:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
 module.exports = {
   createBlogPost,
   getAllPost,
@@ -277,4 +307,7 @@ module.exports = {
   uploadFile,
   saveLog,
   getAuditLogs,
+  addComment,
+  getCommentsByBlogPostId,
+  setCommentVisibility,
 };

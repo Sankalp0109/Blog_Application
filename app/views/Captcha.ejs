@@ -3,22 +3,23 @@
     <title>reCAPTCHA demo: Explicit render for multiple widgets</title>
     <script type="text/javascript">
       var verifyCallback = function(response) {
-        alert(response);
+        window.location.href = 'http://localhost:3001/'
+        // alert(response);
       };
       var widgetId1;
       var widgetId2;
       var onloadCallback = function() {
         // Renders the HTML element with id 'example1' as a reCAPTCHA widget.
         // The id of the reCAPTCHA widget is assigned to 'widgetId1'.
-        widgetId1 = grecaptcha.render('example1', {
-          'sitekey' : 'your_site_key',
-          'theme' : 'light'
-        });
-        widgetId2 = grecaptcha.render(document.getElementById('example2'), {
-          'sitekey' : 'your_site_key'
-        });
+        // widgetId1 = grecaptcha.render('example1', {
+        //   'sitekey' : '6LfZaIkpAAAAAG2ZD9XuKmyE8P7uziv0qAHQ_VV_',
+        //   'theme' : 'light'
+        // });
+        // widgetId2 = grecaptcha.render(document.getElementById('example2'), {
+        //   'sitekey' : '6LfZaIkpAAAAAG2ZD9XuKmyE8P7uziv0qAHQ_VV_'
+        // });
         grecaptcha.render('example3', {
-          'sitekey' : 'your_site_key',
+          'sitekey' : '6Ld9aokpAAAAABqN8ZMTmSusoBczrSzUJ_f6vaOQ',
           'callback' : verifyCallback,
           'theme' : 'dark'
         });
@@ -27,19 +28,19 @@
   </head>
   <body>
     <!-- The g-recaptcha-response string displays in an alert message upon submit. -->
-    <form action="javascript:alert(grecaptcha.getResponse(widgetId1));">
+    <!-- <form action="javascript:alert(grecaptcha.getResponse(widgetId1));">
       <div id="example1"></div>
       <br>
       <input type="submit" value="getResponse">
     </form>
     <br>
-    <!-- Resets reCAPTCHA widgetId2 upon submit. -->
+    Resets reCAPTCHA widgetId2 upon submit.
     <form action="javascript:grecaptcha.reset(widgetId2);">
       <div id="example2"></div>
       <br>
       <input type="submit" value="reset">
     </form>
-    <br>
+    <br> -->
     <!-- POSTs back to the page's URL upon submit with a g-recaptcha-response POST parameter. -->
     <form action="?" method="POST">
       <div id="example3"></div>

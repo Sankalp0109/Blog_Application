@@ -34,6 +34,12 @@ module.exports = (sequelize, DataTypes) => {
       BlogPost.belongsTo(models.Category, {
         foreignKey: 'CategoryId', 
       });
+      BlogPost.belongsTo(models.Admin, {
+        foreignKey: 'AdminAdminId', 
+      });
+      BlogPost.hasMany(models.Comment, {
+        onDelete: "cascade",
+      });
     };
     
     return BlogPost;
