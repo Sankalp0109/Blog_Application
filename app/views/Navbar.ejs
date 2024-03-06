@@ -1,10 +1,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
+<!-- https://i.ibb.co/prH5Msb/572-2.png -->
 <nav class="navbar  shadow navbar-expand-lg bg-light width-100">
   <div class="container-fluid">
-    <img src="https://i.ibb.co/prH5Msb/572-2.png" class="my-2 mx-2" style="width: 150px" />
+    <img src="http://localhost:3001/logo.png" class="my-2 mx-2" style="width: 150px" />
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -36,6 +36,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link text" aria-current="page" href="http://localhost:3001/allusers">Edit Users</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text" aria-current="page" href="http://localhost:3001/category/">Edit Categories</a>
               </li>
             </ul>
           </li>
@@ -87,14 +90,14 @@
       return false;
     });
     const loadCategory = () => {
-      fetch(`http://localhost:3001/category/`)
+      fetch(`http://localhost:3001/category/?format=json`)
         .then((res) => res.json())
         .then((res) => {
           const categorySelect = document.getElementById('all-cat');
           res.forEach((cat) => {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.setAttribute('href', `http://localhost:3001/post/bycategory/${cat.CotegoryId}`);
+            a.setAttribute('href', `http://localhost:3001/post/bycategory/${cat.CategoryId}`);
             a.setAttribute('class', 'dropdown-item');
             a.innerHTML = `${cat.CategoryName}`;
             li.appendChild(a);

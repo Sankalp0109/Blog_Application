@@ -68,7 +68,7 @@
               </div>
               <div class="mb-3">
                 <label for="catg" class="form-label text-black">Choose a Category:</label>
-                <select name="category" class="form-control" id="all-category">
+                <select name="category" class="form-control" style="width: 100%;" id="all-category">
 
                 </select>
               </div>
@@ -76,6 +76,11 @@
                 <label for="title" class="form-label text-black">Tags</label>
                 <input type="text" class="form-control" name="tags" data-role="tagsinput"
                   placeholder="Enter Comma Separated values Ex: Football,Cricket etc" required>
+              </div>
+              <div class="mb-3">
+                <label for="summary" class="form-label text-black">Summary</label>
+                <textarea class="form-control h-100" name="summary" id="summary" placeholder="Enter summary under 500 words"
+                  rows="4" required></textarea>
               </div>
               <div class="mb-3">
                 <label for="des" class="form-label text-black">Content</label>
@@ -88,7 +93,7 @@
     </div>
     <script>
       window.onload = () => {
-        fetch(`http://localhost:3001/category/`)
+        fetch(`http://localhost:3001/category/?format=json`)
           .then((res) => res.json())
           .then((res) => {
             // const categorySelect = document.getElementById('all-category');
@@ -109,9 +114,9 @@
           const categoriesContainer = $("#all-category");
 
           categoriesContainer.empty();
-
+          console.log(categories);
           categories.forEach((category) => {
-            console.log(category);
+            console.log(category.CotegoryId);
             const option = $("<option>", {
               value: category.CategoryId,
               text: category.CategoryName,

@@ -1,4 +1,4 @@
-const { BlogPost, Admin, AuditLog, Comment} = require('../models');
+const { BlogPost, Admin, AuditLog, Comment, Category} = require('../models');
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
@@ -7,7 +7,7 @@ const iv = crypto.randomBytes(16);
 const key = crypto.randomBytes(32);
 const algorithm = "aes-256-cbc";
 const createBlogPost = async (req, res) => {
-  const { title, content, tags, category } = req.body;
+  const { title, content, tags, category, summary} = req.body;
   const post = await BlogPost.create({
     title: title,
     content: content,
@@ -15,6 +15,7 @@ const createBlogPost = async (req, res) => {
     AdminAdminId: req.session.user.AdminId,
     CategoryId: category,
     image: req.file.filename,
+    summary:summary,
   });
   await AuditLog.create({
     UserEmail: req.session.user.email,
@@ -33,6 +34,7 @@ const getAllPost = async (req, res) => {
     const result = await BlogPost.findAndCountAll({
       offset,
       limit: parseInt(limit),
+      include:[Category,Admin],
     });
     
 //     const BlogDetails = await Promise.all(
@@ -237,12 +239,42 @@ function decrypt(encryptedText) {
 const addComment = async (req,res)=>{
   const blogId = req.params.id;
   const {name, comment} = req.body;
-  await Comment.create({
-    name:name,
-    comment:comment,
-    BlogPostPostId:blogId
-  });
-  return res.redirect(`/post/byid/${blogId}`);
+  console.log(req.body);
+  
+  const params = new URLSearchParams();
+  params.append('secret', '6Ld9aokpAAAAAOwjM4GkKIQqkzyVXAcssTsCGJY5');
+  params.append('response', req.body['g-recaptcha-response']);
+  params.append('remoteip', req.ip);
+  try {
+    const result = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      body: params,
+    });
+
+    const data = await result.json();
+    console.log(data.success);
+
+    if (data.success) {
+      try {
+        console.log(data.success);
+        await Comment.create({
+          name: name,
+          comment: comment,
+          BlogPostPostId: blogId,
+        });
+        return res.redirect(`/post/byid/${blogId}`);
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send('Internal Server Error');
+      }
+    } else {
+      return res.redirect(`/post/byid/${blogId}`);
+    }
+  } catch (error) {
+    console.error('Error during reCAPTCHA verification:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+  
 }
 const getCommentsByBlogPostId = async (req,res) => {
   const blogPostId = req.params.id;
@@ -270,9 +302,9 @@ const setCommentVisibility = async (req, res) => {
     const blogId = req.params.id;
     const commentId = req.query.comment;
     const comment = await Comment.findByPk(commentId);
-    console.log(blogId);
-    console.log(commentId);
-    console.log(comment);
+    // console.log(blogId);
+    // console.log(commentId);
+    // console.log(comment);
 
     if (!comment) {
       return res.status(404).json({ error: 'comment not found' });

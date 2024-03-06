@@ -12,46 +12,49 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;500&family=Roboto+Slab:wght@400;500&display=swap"
     rel="stylesheet">
-    
-     
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="icon" type="image/x-icon" href="https://icons8.com/icon/XBMnwwJYQvfN/star">
+
 </head>
 
 <body class="bg-light" style="font-family:'Roboto Slab', serif;">
   <%- include('Navbar') -%>
-  <% if (messages.length > 0) { %>
-    <div class="alert alert-danger " style="transition: opacity 0.5s ease-in-out;" role="alert" id="flashMessage">
-      
-        <% messages.forEach(message => { %>
-          <%= message %>
-        <% }); %>
-      
-    </div>
-  <% } %>
-  <% if (status.length > 0) { %>
-    <div class="alert alert-success " style="transition: opacity 0.5s ease-in-out;" role="alert" id="flashMessage">
-      
-        <% status.forEach(message => { %>
-          <%= message %>
-        <% }); %>
-      
-    </div>
-  <% } %>
+    <% if (messages.length> 0) { %>
+      <div class="alert alert-danger " style="transition: opacity 0.5s ease-in-out;" role="alert" id="flashMessage">
 
-    <!-- <% if (session && session?.user?.dataValues?.email) { %>
+        <% messages.forEach(message=> { %>
+          <%= message %>
+            <% }); %>
+
+      </div>
+      <% } %>
+        <% if (status.length> 0) { %>
+          <div class="alert alert-success " style="transition: opacity 0.5s ease-in-out;" role="alert"
+            id="flashMessage">
+
+            <% status.forEach(message=> { %>
+              <%= message %>
+                <% }); %>
+
+          </div>
+          <% } %>
+
+            <!-- <% if (session && session?.user?.dataValues?.email) { %>
     <h1>Welcome, <%= session?.user?.dataValues?.email %>!</h1>
   <% } %> -->
 
 
 
-    <div class="container my-4 ">
-      <div class="row row-cols-1 row-cols-md-3 g-4" id="all-post">
+            <div class="container my-4 ">
+              <div class="row row-cols-1 row-cols-md-3 g-4" id="all-post">
 
-      </div>
+              </div>
 
-    </div>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center " id="pagination">
-        <!-- <li class="page-item disabled">
+            </div>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center " id="pagination">
+                <!-- <li class="page-item disabled">
         <a class="page-link" href="#" tabindex="-1">Previous</a>
       </li>
       <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -60,149 +63,159 @@
       <li class="page-item">
         <a class="page-link" >Next</a>
       </li> -->
-      </ul>
-    </nav>
+              </ul>
+            </nav>
 
-    <%- include('Footer') -%>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
+            <%- include('Footer') -%>
+              <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+                crossorigin="anonymous"></script>
 
 
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        window.onload = function getAllPost() {
-          let currentPage = 1;
-          const postsPerPage = 6;
-          let totalPosts;
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  window.onload = function getAllPost() {
+                    let currentPage = 1;
+                    const postsPerPage = 6;
+                    let totalPosts;
 
-          function fetchAndRenderPosts() {
-            fetch(`http://localhost:3001/post/?page=${currentPage}&limit=${postsPerPage}`)
-              .then((res) => res.json())
-              .then((res) => {
-                console.log(res);
-                // totalPosts = res.total; 
-                // const posts = res.posts.map((post) => {
-                //   return `<div class="col" data-post-id="${post.postId}">
-                //       <div class="card shadow h-100">
-                //         <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top"
-                //           alt="Wrong Path">
-                //         <div class="card-body" style="height: 150px; overflow: hidden;">
-                //           <h5 class="card-title"><b>${post.title}</b></h5>
-                //           <p class="card-text">${post.content}</p>
-                //         </div>
-                //       </div>
-                //     </div>`;
-                // });
-                // console.log(res);
-                // document.getElementById('all-post').innerHTML = posts.join('');
-                totalPosts = res.total;
-                const allPostsDiv = document.getElementById('all-post');
-                allPostsDiv.innerHTML = '';
+                    function fetchAndRenderPosts() {
+                      fetch(`http://localhost:3001/post/?page=${currentPage}&limit=${postsPerPage}`)
+                        .then((res) => res.json())
+                        .then((res) => {
+                          console.log(res);
+                          // totalPosts = res.total; 
+                          // const posts = res.posts.map((post) => {
+                          //   return `<div class="col" data-post-id="${post.postId}">
+                          //       <div class="card shadow h-100">
+                          //         <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top"
+                          //           alt="Wrong Path">
+                          //         <div class="card-body" style="height: 150px; overflow: hidden;">
+                          //           <h5 class="card-title"><b>${post.title}</b></h5>
+                          //           <p class="card-text">${post.content}</p>
+                          //         </div>
+                          //       </div>
+                          //     </div>`;
+                          // });
+                          // console.log(res);
+                          // document.getElementById('all-post').innerHTML = posts.join('');
+                          totalPosts = res.total;
+                          const allPostsDiv = document.getElementById('all-post');
+                          allPostsDiv.innerHTML = '';
 
-                res.posts.forEach((post) => {
-                  const postDiv = document.createElement('div');
-                  postDiv.className = 'col';
-                  postDiv.setAttribute('data-post-id', post.postId);
 
-                  postDiv.innerHTML = `
-          <div class="card shadow h-100">
-            <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top" alt="Wrong Path">
+                          res.posts.forEach((post) => {
+                            const postDiv = document.createElement('div');
+                            postDiv.className = 'col';
+                            postDiv.setAttribute('data-post-id', post.postId);
+
+                            postDiv.innerHTML = `
+          <div class="card shadow h-100" style="position: relative; overflow: hidden;">
+            <div style="position: relative;">
+        <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top" alt="Wrong Path">
+        <span class="badge bg-secondary" style="position: absolute; top: 1%; left: 0; transform: rotate(0deg); ">${post.Category.CategoryName}</span>
+            </div>
             <div class="card-body" style="height: 150px; overflow: hidden;">
+              <div class="d-flex flex-row justify-content-between align-items-center">
               <h5 class="card-title"><b>${post.title}</b></h5>
-              <p class="card-text">${post.content}</p>
+                <div class="btn-secondary d-flex align-items-center">
+                <span class="material-symbols-outlined">person</span>
+                          ${post.Admin.Name}
+                  </div>
+              </div>
+              <p class="card-text">${post.summary}</p>
             </div>
           </div>
         `;
 
-                  allPostsDiv.appendChild(postDiv);
+                            allPostsDiv.appendChild(postDiv);
+                          });
+                          updatePagination();
+                        });
+                    }
+
+                    fetchAndRenderPosts();
+
+
+                    document.getElementById('pagination').addEventListener('click', function (event) {
+                      const target = event.target;
+
+                      if (target.classList.contains('page-link')) {
+                        const page = parseInt(target.innerText);
+
+                        if (!isNaN(page) && page >= 1 && page <= Math.ceil(totalPosts / postsPerPage)) {
+                          currentPage = page;
+                          fetchAndRenderPosts();
+                          updatePagination();
+                        }
+                      }
+                    });
+                    document.getElementById('all-post').addEventListener('click', function (event) {
+                      const cardElement = event.target.closest('.card');
+                      if (cardElement) {
+                        const postId = cardElement.parentElement.getAttribute('data-post-id');
+                        if (postId) {
+                          window.location.href = `/post/byid/${postId}`;
+                        }
+                      }
+                    });
+
+
+                    function updatePagination() {
+                      const totalPages = Math.ceil(totalPosts / postsPerPage);
+                      const paginationElement = document.getElementById('pagination');
+                      paginationElement.innerHTML = '';
+
+
+                      const previousLi = document.createElement('li');
+                      previousLi.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
+                      previousLi.innerHTML = `<a class="page-link"  tabindex="-1">Previous</a>`;
+                      previousLi.addEventListener('click', function () {
+                        if (currentPage > 1) {
+                          currentPage--;
+                          fetchAndRenderPosts();
+                          updatePagination();
+                        }
+                      });
+                      paginationElement.appendChild(previousLi);
+
+                      for (let i = 1; i <= totalPages; i++) {
+                        const li = document.createElement('li');
+                        li.className = 'page-item' + (i === currentPage ? ' active' : '');
+                        li.innerHTML = `<a class="page-link" href="#" >${i}</a>`;
+                        li.addEventListener('click', function () {
+                          currentPage = i;
+                          fetchAndRenderPosts();
+                          updatePagination();
+                        });
+                        paginationElement.appendChild(li);
+                      }
+
+                      const nextLi = document.createElement('li');
+                      nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
+                      nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+                      nextLi.addEventListener('click', function () {
+                        if (currentPage < totalPages) {
+                          currentPage++;
+                          fetchAndRenderPosts();
+                          updatePagination();
+                        }
+                      });
+                      paginationElement.appendChild(nextLi);
+                    }
+                  }
+
+                  setTimeout(function () {
+                    const flashMessage = document.getElementById('flashMessage');
+                    if (flashMessage) {
+                      flashMessage.style.opacity = '0';
+                      setTimeout(function () {
+                        flashMessage.style.display = 'none';
+                      }, 1000);
+                    }
+                  }, 2000);
                 });
-                updatePagination();
-              });
-          }
-
-          fetchAndRenderPosts();
-
-
-          document.getElementById('pagination').addEventListener('click', function (event) {
-            const target = event.target;
-
-            if (target.classList.contains('page-link')) {
-              const page = parseInt(target.innerText);
-
-              if (!isNaN(page) && page >= 1 && page <= Math.ceil(totalPosts / postsPerPage)) {
-                currentPage = page;
-                fetchAndRenderPosts();
-                updatePagination();
-              }
-            }
-          });
-          document.getElementById('all-post').addEventListener('click', function (event) {
-            const cardElement = event.target.closest('.card');
-            if (cardElement) {
-              const postId = cardElement.parentElement.getAttribute('data-post-id');
-              if (postId) {
-                window.location.href = `/post/byid/${postId}`;
-              }
-            }
-          });
-
-
-          function updatePagination() {
-            const totalPages = Math.ceil(totalPosts / postsPerPage);
-            const paginationElement = document.getElementById('pagination');
-            paginationElement.innerHTML = '';
-
-
-            const previousLi = document.createElement('li');
-            previousLi.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
-            previousLi.innerHTML = `<a class="page-link"  tabindex="-1">Previous</a>`;
-            previousLi.addEventListener('click', function () {
-              if (currentPage > 1) {
-                currentPage--;
-                fetchAndRenderPosts();
-                updatePagination();
-              }
-            });
-            paginationElement.appendChild(previousLi);
-
-            for (let i = 1; i <= totalPages; i++) {
-              const li = document.createElement('li');
-              li.className = 'page-item' + (i === currentPage ? ' active' : '');
-              li.innerHTML = `<a class="page-link" href="#" >${i}</a>`;
-              li.addEventListener('click', function () {
-                currentPage = i;
-                fetchAndRenderPosts();
-                updatePagination();
-              });
-              paginationElement.appendChild(li);
-            }
-
-            const nextLi = document.createElement('li');
-            nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
-            nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
-            nextLi.addEventListener('click', function () {
-              if (currentPage < totalPages) {
-                currentPage++;
-                fetchAndRenderPosts();
-                updatePagination();
-              }
-            });
-            paginationElement.appendChild(nextLi);
-          }
-        }
-        
-        setTimeout(function() {
-          const flashMessage = document.getElementById('flashMessage');
-          if (flashMessage) {
-            flashMessage.style.opacity = '0';
-            setTimeout(function() {
-              flashMessage.style.display = 'none';
-            }, 1000);
-          }
-        }, 2000);
-      });
-      </script>
+              </script>
 </body>
 
 </html>

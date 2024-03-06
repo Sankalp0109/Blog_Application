@@ -17,6 +17,10 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
 </head>
 
 
@@ -25,7 +29,7 @@
   <%- include('Navbar') -%>
     <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August" , "September"
       , "October" , "November" , "December" ]; %>
-      <div class="flex-grow-1 d-flex justify-content-center flex-column">
+      <div class="flex-grow-1 d-flex justify-content-center flex-column my-4">
         <div class="container d-flex  flex-column">
           <!-- <h1><%= post.postId %></h1> -->
           <img src="http://localhost:3001/<%= post.image %>" style="height: 200px;">
@@ -103,21 +107,28 @@
                                 <%= comment.createdAt.getDate() %>, <%= comment.createdAt.getFullYear() %>
                                     <%if(session?.user?.AdminId==post?.AdminAdminId){%>
                                       <% if(!comment.isApproved) {%>
+                                        
                                         <a class="badge bg-primary text-decoration-none" data-toggle="tooltip"
                                           title="Click to Approve Comment"
-                                          href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>">Pending</a>
+                                          href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>"><span class="material-symbols-outlined">
+                                            done
+                                            </span></a>
                                         <%}%>
                                           <% if(comment.isApproved) {%>
                                             <a class="badge bg-secondary text-decoration-none" data-toggle="tooltip"
                                               title="Click to Hide Comment"
-                                              href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>">Hide</a>
+                                              href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>"><span class="material-symbols-outlined">
+                                                hide
+                                                </span></a>
                                             <%}%>
                                               <a class="badge bg-danger text-decoration-none" data-toggle="tooltip"
                                                 title="Click to Delete Comment"
-                                                href="/post/comment/<%= post.postId %>?action=delete&comment=<%=comment.id%>">Delete</a>
+                                                href="/post/comment/<%= post.postId %>?action=delete&comment=<%=comment.id%>"><span class="material-symbols-outlined">
+                                                  delete
+                                                  </span></a>
                                               <%}%>
                             </p>
-                            
+
                           </div>
                           <p class="mb-0">
                             <%= comment.comment %>
@@ -136,9 +147,9 @@
           </div>
         </div>
       </section>
+      <!-- action="/post/comment/add/<%= post.postId %>" -->
       <div id="formContainer" style="display: none;">
-        <form class="m-5" action="/post/comment/add/<%= post.postId %>" id="my-form" method="post"
-          enctype="application/x-www-form-urlencoded">
+        <form class="m-5" id="my-form" method="post" action="/post/comment/add/<%= post.postId %>" enctype="application/x-www-form-urlencoded">
 
 
           <div class="mb-3">
@@ -152,10 +163,11 @@
                 <% } %>
           </div>
           <div class="mb-3">
-            <label for="comment" class="form-label text-black">Conmment</label>
+            <label for="comment" class="form-label text-black">Comment</label>
             <textarea class="form-control h-100" name="comment" id="comment" placeholder="Enter Comment..."
-              rows="4"></textarea>
+              rows="4" required></textarea>
           </div>
+          <div class="g-recaptcha" data-sitekey="6Ld9aokpAAAAABqN8ZMTmSusoBczrSzUJ_f6vaOQ" ></div>
           <button type="submit" class="btn btn-warning">Add Comment</button>
         </form>
       </div>
@@ -243,6 +255,15 @@
                   formContainer.style.display = 'block';
                   document.getElementById('add-comment').style.display = 'none';
                 }
+                const form = document.getElementById('my-form');
+                form.addEventListener('submit', (e) => {
+                  const captchaResponse = grecaptcha.getResponse();
+                  
+                  if (!captchaResponse.length > 0) {
+                    e.preventDefault(); // Prevent form submission if captcha is not completed
+                    alert("Complete Captcha"); // Optionally, show an alert or handle the error
+                  }
+                })
               </script>
 </body>
 
