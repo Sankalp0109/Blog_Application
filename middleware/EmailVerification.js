@@ -1,6 +1,7 @@
 
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
+let otp
 const generateOTP = ()=> {
   return otpGenerator.generate(6, {
     digits: true,
@@ -10,16 +11,16 @@ const generateOTP = ()=> {
 };
 const sendOTPEmail = async(email, otp)=> {
   const mailtrapConfig = {
-    host: "sandbox.smtp.mailtrap.io",
+    host: "live.smtp.mailtrap.io",
     port: 2525,
     auth: {
-      user: "4ad9e9187cf2d4",
-      pass: "4d8d3ae4830d5e"
+      user: "api",
+      pass: "3b9441dd5fe6b383a3e27c2771785490"
     }
   };
   const transporter = nodemailer.createTransport(mailtrapConfig);
   const mailOptions = {
-    from: 'your-email@example.com',
+    from: 'mailtrap@demomailtrap.com',
     to: email,
     subject: 'Your OTP Code',
     text: `Your OTP (One-Time Password) is: ${otp}`,
@@ -34,14 +35,26 @@ const sendOTPEmail = async(email, otp)=> {
 const sendOTP = (req,res,next)=>{
     const OTP = generateOTP();
     const email = req.body.email;
+    //console.log(email);
     try{
     sendOTPEmail(email,OTP);
-    res.redirect('/OTP');
+    otp = OTP;
+    req.session.otp = OTP;
+    console.log('OTP saved in session:', req.session.otp);
     }catch(error){
         console.log(error);
     }
 
 }
+const verifyOTP = (req,res,next)=>{
+  if(req.body.otp != otp){
+    req.flash('error','Wrong OTP');
+    res.redirect('/signup');
+  } else{
+    next();
+  }
+}
 module.exports = {
     sendOTP,
+    verifyOTP,
 }

@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt");
 const { Op } = require('sequelize');
 
 
-
 const userSignUp = async (req, res) => {
   const { name, password, email, isAdmin } = req.body;
+  console.log(req.body);
   try {
     const existingUser = await Admin.findOne({ where: { [Op.or]: [{ Name: name }, { email: email }] } });
 

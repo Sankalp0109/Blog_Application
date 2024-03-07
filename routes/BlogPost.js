@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { BlogPost } = require("../app/models");
 const { validateUser, validateAdmin, checkPermission} = require('../middleware/AuthMiddleware');
+
 const multer = require('multer');
 const postControllers = require('../app/controllers/PostController');
 const storage = multer.diskStorage({

@@ -27,6 +27,19 @@
 <body class="bg-light d-flex flex-column" style="min-height: 100vh; font-family:'Roboto Slab', serif;">
 
   <%- include('Navbar') -%>
+  <% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="flashMessage">
+      <%= messages[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+  <% if (typeof status !== 'undefined' && status.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="flashMessage">
+      <%= status[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+  
     <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August" , "September"
       , "October" , "November" , "December" ]; %>
       <div class="flex-grow-1 d-flex justify-content-center flex-column my-4">
@@ -221,7 +234,10 @@
                       deletePost();
                     }
                   });
-                  const tagsDiv = document.getElementById('tags');
+                  
+
+                });
+                const tagsDiv = document.getElementById('tags');
                   const tags = processString('<%= post.tags%>');
                   console.log('<%= post.tags%>');
                   console.log(tags);
@@ -232,8 +248,6 @@
                     a.textContent = `#${val}  `;
                     tagsDiv.append(a);
                   })
-
-                });
                 function processString(inputString) {
                   console.log(inputString);
                   const valuesArray = inputString.split(',');
@@ -284,6 +298,16 @@
                     alert("Complete Captcha"); // Optionally, show an alert or handle the error
                   }
                 })
+                setTimeout(function () {
+                    const flashMessage = document.getElementById('flashMessage');
+                    if (flashMessage) {
+                      flashMessage.style.opacity = '0';
+                      setTimeout(function () {
+                        flashMessage.style.display = 'none';
+                      }, 1000);
+                    }
+                  }, 2000);
+                
 
               </script>
 </body>

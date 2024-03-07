@@ -6,6 +6,10 @@ const crypto = require('crypto');
 const iv = crypto.randomBytes(16);
 const key = crypto.randomBytes(32);
 const algorithm = "aes-256-cbc";
+const Filter = require('bad-words');
+const profanity = require("profanity-hindi");
+
+
 const createBlogPost = async (req, res) => {
   const { title, content, tags, category, summary } = req.body;
   try {
@@ -18,21 +22,21 @@ const createBlogPost = async (req, res) => {
       image: req.file.filename,
       summary: summary,
     });
-    if(post){
-    await AuditLog.create({
-      UserEmail: req.session.user.email,
-      Action: 'CREATE',
-      PostId: post.postId,
-    });
-    req.flash('success-message', "Post Created Successfully");
-    res.redirect('/');
-  }
-  }catch(error){
+    if (post) {
+      await AuditLog.create({
+        UserEmail: req.session.user.email,
+        Action: 'CREATE',
+        PostId: post.postId,
+      });
+      req.flash('success-message', "Post Created Successfully");
+      res.redirect('/');
+    }
+  } catch (error) {
     console.log(error.sqlMessage);
     req.flash('message', "Some Error Occured TRY AGAIN !!!");
     res.redirect('/');
   }
-  
+
 };
 
 const getAllPost = async (req, res) => {
@@ -82,7 +86,7 @@ const getPostById = async (req, res) => {
     if (req.query.format === 'json') {
       res.json(post);
     } else {
-      res.render('Post', { post: post, isAuth: req.session.isAuthenticated, });
+      res.render('Post', { post: post, isAuth: req.session.isAuthenticated, messages: req.flash('error'), status: req.flash('success-message') });
     }
   } catch (error) {
     console.error('Error fetching post:', error);
@@ -267,18 +271,25 @@ const addComment = async (req, res) => {
 
     if (data.success) {
       try {
+        const filter = new Filter();
+        if (filter.isProfane(comment) || profanity.isMessageDirty(comment)) {
+          req.flash('error', 'Comment contains inappropriate content.');
+          return res.redirect(`/post/byid/${blogId}`);
+        }
         console.log(data.success);
         await Comment.create({
           name: name,
           comment: comment,
           BlogPostPostId: blogId,
         });
+        req.flash('success-message', 'Comment Posted. It will be Visible when Author Approve it');
         return res.redirect(`/post/byid/${blogId}`);
       } catch (error) {
         console.log(error);
         return res.status(500).send('Internal Server Error');
       }
     } else {
+      req.flash('error', 'Some Error Occured. Please Try Again !');
       return res.redirect(`/post/byid/${blogId}`);
     }
   } catch (error) {
