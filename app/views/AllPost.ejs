@@ -37,25 +37,30 @@
     </div> -->
 
     <div class="container my-4">
-      <h5 class="card-title mb-3 ">Category - <%- category %></h5>
-      <div class="row row-cols-1 row-cols-md-3 g-4" id="all-post">
-        <% for(var i=0; i<posts.length; i++){ %>
-          
-            <div class="col " data-post-id="<%- posts[i].postId %>">
-              <div class="card shadow h-100" data-post-id="<%- posts[i].postId %>">
-                <img src="http://localhost:3001/<%- posts[i].image %>" style="object-fit: cover;" height="300px"
-                  class="card-img-top" alt="Wrong Path">
-                <div class="card-body" >
-                  <h5 class="card-title "><b><%- posts[i].title %></b></h5>
-                  <!-- <p class="card-text"><%- posts[i].content %></p> -->
-                  <span class="d-inline-block text-truncate" style="max-width: 150px;">
-                    <!-- <%- posts[i].content %> -->
-                  </span>
+
+      <% if (posts.length> 0) { %>
+        <h5 class="card-title mb-3">Search Results For - <%- category %></h5>
+        <% } else { %>
+          <h5 class="card-title mb-3">Nothing Found For - <%- category %></h5>
+          <% } %>
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="all-post">
+              <% for(var i=0; i<posts.length; i++){ %>
+
+                <div class="col " data-post-id="<%- posts[i].postId %>">
+                  <div class="card shadow h-100" data-post-id="<%- posts[i].postId %>">
+                    <img src="http://localhost:3001/<%- posts[i].image %>" style="object-fit: cover;" height="300px"
+                      class="card-img-top" alt="Wrong Path">
+                    <div class="card-body">
+                      <h5 class="card-title "><b><%- posts[i].title %></b></h5>
+                      <!-- <p class="card-text"><%- posts[i].content %></p> -->
+                      <span class="d-inline-block text-truncate" style="max-width: 150px;">
+                        <!-- <%- posts[i].content %> -->
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <% } %>
             </div>
-            <% } %>
-      </div>
     </div>
     <!-- <div class="container my-4">
       <div class="row row-cols-1 row-cols-md-3 g-4">

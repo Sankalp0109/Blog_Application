@@ -14,7 +14,7 @@
     rel="stylesheet">
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="icon" type="image/x-icon" href="https://icons8.com/icon/XBMnwwJYQvfN/star">
+  <link rel="icon" type="image/x-icon" href="https://icons8.com/icon/XBMnwwJYQvfN/star">
 
 </head>
 
@@ -113,7 +113,7 @@
           <div class="card shadow h-100" style="position: relative; overflow: hidden;">
             <div style="position: relative;">
         <img src="http://localhost:3001/${post.image}" style="object-fit: cover;" height="300px" class="card-img-top" alt="Wrong Path">
-        <span class="badge bg-secondary" style="position: absolute; top: 1%; left: 0; transform: rotate(0deg); ">${post.Category.CategoryName}</span>
+        <span class="badge bg-info" style="position: absolute; top: 1%; left: 0; transform: rotate(0deg); ">${post.Category.CategoryName}</span>
             </div>
             <div class="card-body" style="height: 150px; overflow: hidden;">
               <div class="d-flex flex-row justify-content-between align-items-center">
@@ -123,7 +123,8 @@
                           ${post.Admin.Name}
                   </div>
               </div>
-              <p class="card-text">${post.summary}</p>
+              <p class="card-text" style="height: 50px; overflow: hidden;">${post.summary}</p>
+              <p class="card-text"><strong>Tags:</strong> ${createTagAnchors(post.tags,post.postId)}</p>
             </div>
           </div>
         `;
@@ -135,6 +136,19 @@
                     }
 
                     fetchAndRenderPosts();
+                    function createTagAnchors(tags,id) {
+                      const maxTagsToShow = 3;
+                      const cleanedTags = tags.split(',').map(tag => tag.trim());
+                      const uniqueValues = [...new Set(cleanedTags)];
+                      const visibleTags = uniqueValues.slice(0, maxTagsToShow);
+                      const tagAnchors = [];
+                      tagAnchors.push(...visibleTags.map(tag => `<a href="http://localhost:3001/post/bytag/${tag}">#${tag}</a>`));
+                      if (uniqueValues.length > maxTagsToShow) {
+                        const remainingCount = uniqueValues.length - maxTagsToShow;
+                        tagAnchors.push(`<a href="http://localhost:3001/post/byid/${id}">+${remainingCount}</a>`);
+                      }
+                      return tagAnchors;
+                    }
 
 
                     document.getElementById('pagination').addEventListener('click', function (event) {

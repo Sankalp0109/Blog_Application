@@ -25,7 +25,8 @@ const storage = multer.diskStorage({
     
   });
 
-
+  
+router.get('/uploadimage',upload.single('image'));
 
 router.get("/", postControllers.getAllPost);
 router.get('/byid/:postId', postControllers.getPostById);
@@ -34,6 +35,7 @@ router.get('/bycategory/:catId', postControllers.getPostByCategory);
 router.post('/comment/add/:id',postControllers.addComment);
 //router.get('/comment/:id',postControllers.getCommentsByBlogPostId);
 router.get('/comment/:id',postControllers.setCommentVisibility);
+
 router.use(validateUser);
 router.post("/create",upload.single('image'), postControllers.createBlogPost);
 router.post('/update/:postId',checkPermission,postControllers.saveLog('UPDATE'), postControllers.updatePostById);

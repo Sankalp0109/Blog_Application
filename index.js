@@ -57,6 +57,9 @@ app.use("/post", blogPostRouter);
 app.get("/login",(req,res)=>{
    res.render('Login.ejs',{ messages: req.flash('error') });
 });
+app.get("/OTP",(req,res)=>{
+   res.render('OTP.ejs',{ messages: req.flash('error') });
+});
 app.get("/",(req,res)=>{
    res.render('Home.ejs',{ messages: req.flash('message'), status: req.flash('success-message')});
 });

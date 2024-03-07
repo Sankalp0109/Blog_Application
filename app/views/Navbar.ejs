@@ -59,13 +59,12 @@
           <h6>Welcome, <%= session?.user?.dataValues?.email %>!</h6>
         <% } %> -->
         <% if (session?.user) { %>
-          <%= console.log(session) %>
-            <a class="btn btn-outline-primary m-1 my-4 p-1" href="/createpost" role="button"
+            <a class="btn btn-primary m-1 my-4 p-1" href="/createpost" role="button"
               style="height: 30px;">AddPost+</a>
-            <a class="btn btn-outline-primary m-1 my-4 p-1" href="http://localhost:3001/logout" role="button"
+            <a class="btn btn-primary m-1 my-4 p-1" href="http://localhost:3001/logout" role="button"
               style="height: 30px;">Logout</a>
             <% } else { %>
-              <a class="btn btn-outline-primary m-1 my-4 p-1" href="/login" role="button">Login</a>
+              <a class="btn btn-primary m-1 my-4 p-1" href="/login" role="button">Login</a>
               <% } %>
 
       </div>
@@ -76,17 +75,12 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("search-button").addEventListener("click", function () {
-      // Get the input value
       var searchInputValue = document.getElementById("searchInput").value;
       if (searchInputValue) {
         window.location.href = `/post/bytag/${searchInputValue}`;
       }
-
-      // Perform your search or any other actions with the input value
       console.log("Search clicked with input:", searchInputValue);
-      // Add more logic here based on your requirements
-
-      // Prevent the default form submission behavior
+      
       return false;
     });
     const loadCategory = () => {

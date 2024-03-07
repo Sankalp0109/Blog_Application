@@ -84,7 +84,7 @@
                     document.getElementById('content').value = data.content;
                     document.getElementById('tags').value = data.tags;
                     document.getElementById('post-image').src = `http://localhost:3001/${data.image}`;
-                    //document.getElementById('title').value = data.title;
+                    
                 }));
         fetch(`http://localhost:3001/category/`)
             .then((res) => res.json())

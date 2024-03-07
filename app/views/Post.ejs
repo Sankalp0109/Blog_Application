@@ -48,6 +48,9 @@
             <%- post.content %>
 
           </p>
+          <p id="tags">
+            <strong>Tags:</strong>
+          </p>
 
 
           <div class="d-flex align-self-end">
@@ -107,25 +110,28 @@
                                 <%= comment.createdAt.getDate() %>, <%= comment.createdAt.getFullYear() %>
                                     <%if(session?.user?.AdminId==post?.AdminAdminId){%>
                                       <% if(!comment.isApproved) {%>
-                                        
+
                                         <a class="badge bg-primary text-decoration-none" data-toggle="tooltip"
                                           title="Click to Approve Comment"
-                                          href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>"><span class="material-symbols-outlined">
+                                          href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>"><span
+                                            class="material-symbols-outlined">
                                             done
-                                            </span></a>
+                                          </span></a>
                                         <%}%>
                                           <% if(comment.isApproved) {%>
                                             <a class="badge bg-secondary text-decoration-none" data-toggle="tooltip"
                                               title="Click to Hide Comment"
-                                              href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>"><span class="material-symbols-outlined">
+                                              href="/post/comment/<%= post.postId %>?action=toggle&comment=<%=comment.id%>"><span
+                                                class="material-symbols-outlined">
                                                 hide
-                                                </span></a>
+                                              </span></a>
                                             <%}%>
                                               <a class="badge bg-danger text-decoration-none" data-toggle="tooltip"
                                                 title="Click to Delete Comment"
-                                                href="/post/comment/<%= post.postId %>?action=delete&comment=<%=comment.id%>"><span class="material-symbols-outlined">
+                                                href="/post/comment/<%= post.postId %>?action=delete&comment=<%=comment.id%>"><span
+                                                  class="material-symbols-outlined">
                                                   delete
-                                                  </span></a>
+                                                </span></a>
                                               <%}%>
                             </p>
 
@@ -149,7 +155,8 @@
       </section>
       <!-- action="/post/comment/add/<%= post.postId %>" -->
       <div id="formContainer" style="display: none;">
-        <form class="m-5" id="my-form" method="post" action="/post/comment/add/<%= post.postId %>" enctype="application/x-www-form-urlencoded">
+        <form class="m-5" id="my-form" method="post" action="/post/comment/add/<%= post.postId %>"
+          enctype="application/x-www-form-urlencoded">
 
 
           <div class="mb-3">
@@ -164,10 +171,10 @@
           </div>
           <div class="mb-3">
             <label for="comment" class="form-label text-black">Comment</label>
-            <textarea class="form-control h-100" name="comment" id="comment" placeholder="Enter Comment..."
-              rows="4" required></textarea>
+            <textarea class="form-control h-100" name="comment" id="comment" placeholder="Enter Comment..." rows="4"
+              required></textarea>
           </div>
-          <div class="g-recaptcha" data-sitekey="6Ld9aokpAAAAABqN8ZMTmSusoBczrSzUJ_f6vaOQ" ></div>
+          <div class="g-recaptcha" data-sitekey="6Ld9aokpAAAAABqN8ZMTmSusoBczrSzUJ_f6vaOQ"></div>
           <button type="submit" class="btn btn-warning">Add Comment</button>
         </form>
       </div>
@@ -204,24 +211,37 @@
                   const updatePostBtn = document.getElementById('updatePostBtn');
                   const deletePostBtn = document.getElementById('deletePostBtn');
 
-                  // Add event listener for updating a post
                   updatePostBtn.addEventListener('click', function () {
-                    // Redirect or perform any action for updating the post
                     window.location.href = 'http://localhost:3001/updatepost?p=<%= post.postId %>';
                   });
-
-                  // Add event listener for deleting a post
                   deletePostBtn.addEventListener('click', function () {
-                    // Perform any action for deleting the post, for example, show a confirmation dialog
                     const confirmation = confirm('Are you sure you want to delete this post?');
                     if (confirmation) {
-                      // Redirect or perform any action for deleting the post
                       window.location.href = `http://localhost:3001/`;
                       deletePost();
                     }
                   });
+                  const tagsDiv = document.getElementById('tags');
+                  const tags = processString('<%= post.tags%>');
+                  console.log('<%= post.tags%>');
+                  console.log(tags);
+                  tags.forEach((val) => {
+                    console.log(val);
+                    const a = document.createElement('a');
+                    a.setAttribute('href', `http://localhost:3001/post/bytag/${val}`);
+                    a.textContent = `#${val}  `;
+                    tagsDiv.append(a);
+                  })
 
                 });
+                function processString(inputString) {
+                  console.log(inputString);
+                  const valuesArray = inputString.split(',');
+                  const trimmedValues = valuesArray.map(value => value.trim());
+                  const uniqueValues = [...new Set(trimmedValues)];
+                  console.log(uniqueValues);
+                  return uniqueValues;
+                }
                 function deletePost() {
                   // Use fetch to send a DELETE request
                   fetch('http://localhost:3001/post/delete/<%= post.postId %>', {
@@ -258,12 +278,13 @@
                 const form = document.getElementById('my-form');
                 form.addEventListener('submit', (e) => {
                   const captchaResponse = grecaptcha.getResponse();
-                  
+
                   if (!captchaResponse.length > 0) {
                     e.preventDefault(); // Prevent form submission if captcha is not completed
                     alert("Complete Captcha"); // Optionally, show an alert or handle the error
                   }
                 })
+
               </script>
 </body>
 

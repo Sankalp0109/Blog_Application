@@ -1,4 +1,4 @@
-const { BlogPost, Admin, AuditLog, Comment, Category} = require('../models');
+const { BlogPost, Admin, AuditLog, Comment, Category } = require('../models');
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
@@ -7,23 +7,32 @@ const iv = crypto.randomBytes(16);
 const key = crypto.randomBytes(32);
 const algorithm = "aes-256-cbc";
 const createBlogPost = async (req, res) => {
-  const { title, content, tags, category, summary} = req.body;
-  const post = await BlogPost.create({
-    title: title,
-    content: content,
-    tags: tags,
-    AdminAdminId: req.session.user.AdminId,
-    CategoryId: category,
-    image: req.file.filename,
-    summary:summary,
-  });
-  await AuditLog.create({
-    UserEmail: req.session.user.email,
-    Action: 'CREATE',
-    PostId: post.postId,
-});
-  req.flash('success-message', "Post Created Successfully");
-  res.redirect('/');
+  const { title, content, tags, category, summary } = req.body;
+  try {
+    const post = await BlogPost.create({
+      title: title,
+      content: content,
+      tags: tags,
+      AdminAdminId: req.session.user.AdminId,
+      CategoryId: category,
+      image: req.file.filename,
+      summary: summary,
+    });
+    if(post){
+    await AuditLog.create({
+      UserEmail: req.session.user.email,
+      Action: 'CREATE',
+      PostId: post.postId,
+    });
+    req.flash('success-message', "Post Created Successfully");
+    res.redirect('/');
+  }
+  }catch(error){
+    console.log(error.sqlMessage);
+    req.flash('message', "Some Error Occured TRY AGAIN !!!");
+    res.redirect('/');
+  }
+  
 };
 
 const getAllPost = async (req, res) => {
@@ -34,15 +43,15 @@ const getAllPost = async (req, res) => {
     const result = await BlogPost.findAndCountAll({
       offset,
       limit: parseInt(limit),
-      include:[Category,Admin],
+      include: [Category, Admin],
     });
-    
-//     const BlogDetails = await Promise.all(
-//       result.rows.map(async (ele, ind) => {
-//         ele.dataValues.postId = encrypt(`${ele.dataValues.postId}`);
-//         return { ...ele.dataValues };
-//       })
-//     );
+
+    //     const BlogDetails = await Promise.all(
+    //       result.rows.map(async (ele, ind) => {
+    //         ele.dataValues.postId = encrypt(`${ele.dataValues.postId}`);
+    //         return { ...ele.dataValues };
+    //       })
+    //     );
     const totalPages = Math.ceil(result.count / parseInt(limit));
 
     res.json({
@@ -60,8 +69,8 @@ const getAllPost = async (req, res) => {
 const getPostById = async (req, res) => {
   const postId = req.params.postId;
   try {
-    const post = await BlogPost.findByPk(postId,{
-      include: [Comment,Admin]
+    const post = await BlogPost.findByPk(postId, {
+      include: [Comment, Admin]
     });
 
     if (!post) {
@@ -73,7 +82,7 @@ const getPostById = async (req, res) => {
     if (req.query.format === 'json') {
       res.json(post);
     } else {
-      res.render('Post', { post: post, isAuth: req.session.isAuthenticated,});
+      res.render('Post', { post: post, isAuth: req.session.isAuthenticated, });
     }
   } catch (error) {
     console.error('Error fetching post:', error);
@@ -99,7 +108,7 @@ const updatePostById = async (req, res) => {
       post.tags = tags;
     await post.save();
 
-   
+
     res.render('UpdatePost', { message: "Post Updated Successfully" });
   } catch (error) {
     console.error('Error updating post content:', error);
@@ -135,9 +144,11 @@ const getPostByCategory = async (req, res) => {
       where: {
         CategoryId: id
       },
+      include: Category,
     });
+    console.log(postsWithCategory);
 
-    res.render('AllPost', { posts: postsWithCategory, category: "category" });
+    res.render('AllPost', { posts: postsWithCategory, category: postsWithCategory[0]?.Category?.CategoryName });
   } catch (error) {
     console.error('Error fetching posts by tag:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -154,7 +165,7 @@ const getPostByTag = async (req, res) => {
         },
       },
     });
-    res.render('AllPost', { posts: postsWithTag, category: tag });
+    res.render('AllPost', { posts: postsWithTag, category: `#${tag}` });
   } catch (error) {
     console.error('Error fetching posts by tag:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -187,23 +198,23 @@ const uploadFile = multer({
 const saveLog = (operation) => {
   console.log('save log called')
   return async (req, res, next) => {
-      try {
-        // console.log(req.session.user.email)
-          await AuditLog.create({
-              UserEmail: req.session.user.email,
-              Action: operation,
-              PostId: req.params.postId,
-          });
-          next();
-      } catch (error) {
-          console.error('Error creating audit log entry:', error);
-      }
+    try {
+      // console.log(req.session.user.email)
+      await AuditLog.create({
+        UserEmail: req.session.user.email,
+        Action: operation,
+        PostId: req.params.postId,
+      });
+      next();
+    } catch (error) {
+      console.error('Error creating audit log entry:', error);
+    }
   }
 };
-const getAuditLogs =  (req,res)=>{
-   AuditLog.findAll()
+const getAuditLogs = (req, res) => {
+  AuditLog.findAll()
     .then((auditLogs) => {
-      res.render('AuditLogs',{logs:auditLogs});
+      res.render('AuditLogs', { logs: auditLogs });
     })
     .catch((error) => {
       console.error('Error retrieving audit logs:', error);
@@ -224,8 +235,8 @@ function decrypt(encryptedText) {
     return decrypted;
   } catch (error) {
     console.log(error);
-    return "error";
-  }
+    return "error";
+  }
 }
 // const originalText = 'This is a secret message';
 // const encryptedData = encrypt(originalText);
@@ -236,11 +247,11 @@ function decrypt(encryptedText) {
 // console.log('Decrypted Text:', decryptedText);
 
 
-const addComment = async (req,res)=>{
+const addComment = async (req, res) => {
   const blogId = req.params.id;
-  const {name, comment} = req.body;
+  const { name, comment } = req.body;
   console.log(req.body);
-  
+
   const params = new URLSearchParams();
   params.append('secret', '6Ld9aokpAAAAAOwjM4GkKIQqkzyVXAcssTsCGJY5');
   params.append('response', req.body['g-recaptcha-response']);
@@ -274,13 +285,13 @@ const addComment = async (req,res)=>{
     console.error('Error during reCAPTCHA verification:', error);
     return res.status(500).send('Internal Server Error');
   }
-  
+
 }
-const getCommentsByBlogPostId = async (req,res) => {
+const getCommentsByBlogPostId = async (req, res) => {
   const blogPostId = req.params.id;
   try {
     const blogPostWithComments = await BlogPost.findByPk(blogPostId, {
-      include: [Comment,Admin]
+      include: [Comment, Admin]
     });
 
     if (!blogPostWithComments) {

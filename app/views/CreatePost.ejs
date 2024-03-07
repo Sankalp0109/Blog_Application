@@ -57,6 +57,7 @@
               </h6>
             </div>
             <% } %>
+            
               <div class="mb-3">
                 <label for="title" class="form-label text-black">Title</label>
                 <input type="text" class="form-control" name="title" placeholder="Enter title" required>
@@ -79,8 +80,8 @@
               </div>
               <div class="mb-3">
                 <label for="summary" class="form-label text-black">Summary</label>
-                <textarea class="form-control h-100" name="summary" id="summary" placeholder="Enter summary under 500 words"
-                  rows="4" required></textarea>
+                <textarea class="form-control h-100" name="summary" id="summary"
+                  placeholder="Enter summary under 500 words" rows="4" required></textarea>
               </div>
               <div class="mb-3">
                 <label for="des" class="form-label text-black">Content</label>
@@ -114,9 +115,7 @@
           const categoriesContainer = $("#all-category");
 
           categoriesContainer.empty();
-          console.log(categories);
           categories.forEach((category) => {
-            console.log(category.CotegoryId);
             const option = $("<option>", {
               value: category.CategoryId,
               text: category.CategoryName,
@@ -129,17 +128,21 @@
         document.getElementById('content').style.display = 'none'; // Hide the original textarea
 
         ClassicEditor
-          .create(document.querySelector('#content'))
+          .create(document.querySelector('#content'), {
+            simpleUpload: {
+              uploadUrl: 'http://localhost:3001/post/uploadimage', 
+            },
+          })
           .then(editor => {
-
-            // CKEditor is ready, show the editor and hide the original textarea
             editor.ui.view.editable.element.style.display = '';
+            editor.ui.view.editable.element.style.height = '300px';
             document.getElementById('content').style.display = 'none';
 
           })
           .catch(error => {
             console.error(error);
           });
+          
 
 
 
