@@ -68,7 +68,8 @@ This is a Node.js web application for a blog platform where users can create, re
         `PORT=3001
         DB_HOST=127.0.0.1
         DB_USER=root
-        DB_DATABASE=blog_application` 
+        DB_DATABASE=blog_application
+        DB_PASSWORD=AdminAdmin@123` 
         
 5.  **Start the Server**:
     
@@ -91,7 +92,12 @@ This is a Node.js web application for a blog platform where users can create, re
     
     -   Users can create, edit, and delete their own blog posts.
     -   Users can comment on blog posts.
-
+4.  **Use Credentials to Access Admin Privileges**:
+    
+    -   email: admin@gmail.com.
+    -   password: 1234.
+  
+      
 ### Contributing
 
 Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to open an issue or submit a pull request.
