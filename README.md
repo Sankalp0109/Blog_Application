@@ -38,6 +38,7 @@ This is a Node.js web application for a blog platform where users can create, re
     
     -   Users (including guests) can comment on blog posts.
     -   Writers have the right to approve or reject comments.
+    -   Comments undergo a profanity check before being posted.
 
 ### Setup
 
@@ -64,12 +65,10 @@ This is a Node.js web application for a blog platform where users can create, re
         
         makefileCopy code
         
-        `PORT=3000
-        SESSION_SECRET=your_session_secret
-        DB_HOST=your_mysql_host
-        DB_USER=your_mysql_username
-        DB_PASSWORD=your_mysql_password
-        DB_DATABASE=your_mysql_database_name` 
+        `PORT=3001
+        DB_HOST=127.0.0.1
+        DB_USER=root
+        DB_DATABASE=blog_application` 
         
 5.  **Start the Server**:
     
