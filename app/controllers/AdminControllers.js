@@ -5,7 +5,8 @@ const { Op } = require('sequelize');
 
 const userSignUp = async (req, res) => {
   const { name, password, email, isAdmin } = req.body;
-  console.log(req.body);
+  const q = req.query.q;
+  console.log(q);
   try {
     const existingUser = await Admin.findOne({ where: { [Op.or]: [{ Name: name }, { email: email }] } });
 
@@ -20,8 +21,10 @@ const userSignUp = async (req, res) => {
         email: email,
         isAdmin: isAdmin === 'true',
       }).then((newUser) => {
+        if(q == 'true'){
         req.session.user = newUser;
         res.locals.session = req.session;
+        }
         res.redirect('/');
       });
       // req.session.user = newUser;

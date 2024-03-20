@@ -96,7 +96,7 @@
 
       </p>
       <% } %>
-        <form id="signup-form" action="/signup" method="post">
+        <form id="signup-form" action="/signup?q=true" method="post">
           <div class="mb-3">
             <input type="name" class="form-control shadow-sm" placeholder="Name" name="name" id="name" required>
           </div>
@@ -109,9 +109,9 @@
           </div>
 
           <div class="mb-3">
-            <button type="button" class="btn btn-primary w-100 shadow" id="otpBtn" onclick="sendOTP()">Send OTP</button>
+            <button type="button" class="btn btn-primary w-100 shadow" id="otpBtn" disabled  onclick="sendOTP()">Send OTP</button>
           </div>
-          <div id="otpContainer"  style="display: none;">
+          <div id="otpContainer" style="display: none;">
             <!-- <label for="otp-field">Enter OTP</label> -->
             <!-- <div class="otp-field mb-4 d-flex flex-row align-items-center">
               <input type="text" class="mb-2 m-2" id="otp1" style="width: 16%;" required />
@@ -122,14 +122,13 @@
               <input type="text" class="mb-2 m-2" id="otp6" disabled style="width: 16%;" required />
             </div> -->
             <div class="mb-3">
-              <input type="otp" class="form-control shadow-sm" placeholder="Enter OTP" name="otp" id="otp"
-              required>
+              <input type="otp" class="form-control shadow-sm" placeholder="Enter OTP" name="otp" id="otp" required>
             </div>
             <div class="mb-3">
               <button type="submit" class="btn btn-primary w-100 shadow" id="loginBtn">Submit</button>
             </div>
-            
-           
+
+
           </div>
           <span>Already user? </span><a href="/login">Login</a>
 
@@ -141,23 +140,23 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    var name = document.getElementById('name');
-    var email = document.getElementById('email');
-    var password = document.getElementById('password');
-    function checkFieldsFilled() {
-    const Name = name.value;
-    const Email = email.value;
-    const Password = password.value;
-    const otpBtn = document.getElementById('otpBtn');
-    if (Name && Email && Password) {
-      otpBtn.removeAttribute('disabled');
-    } else {
-      otpBtn.setAttribute('disabled', 'disabled');
-    }
+var email = document.getElementById('email');
+var password = document.getElementById('password');
+var otpBtn = document.getElementById('otpBtn');
+
+function checkFieldsFilled() {
+  const Name = document.getElementById('name').value;
+  const Email = email.value;
+  const Password = password.value;
+  if (Name  && Email  && Password.length > 3 ) {
+    otpBtn.removeAttribute('disabled');
+  } else {
+    otpBtn.setAttribute('disabled', 'disabled');
   }
-  name.addEventListener('input', checkFieldsFilled);
-  email.addEventListener('input', checkFieldsFilled);
-  password.addEventListener('input', checkFieldsFilled);
+}
+document.getElementById('name').addEventListener('input', checkFieldsFilled);
+email.addEventListener('input', checkFieldsFilled);
+password.addEventListener('input', checkFieldsFilled);
 
     function sendOTP() {
       // You can implement your logic to send OTP here
@@ -189,9 +188,9 @@
         .catch((error) => console.error('Error Occurred: ', error));
       //console.log(formData.get('email'));
     }
-    
+
   </script>
-  <script>
+  <!-- <script>
     const inputs = document.querySelectorAll(".otp-field > input");
     const button = document.querySelector(".btn");
 
@@ -261,7 +260,7 @@
         // }
       });
     });
-  </script>
+  </script> -->
 
 
 </body>

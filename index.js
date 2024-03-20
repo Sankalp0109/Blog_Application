@@ -33,9 +33,9 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: true,
-   //  cookie: {
-   //    expires: 60 * 60 * 24,
-   //  },
+    cookie: {
+      maxAge: 86400000, 
+    },
   })
 );
 app.use((req,res,next)=>{
@@ -57,7 +57,7 @@ app.use("/post", blogPostRouter);
 app.get("/login",(req,res)=>{
    res.render('Login.ejs',{ messages: req.flash('error') });
 });
-app.get("/OTP",(req,res)=>{
+app.get("/otp",(req,res)=>{
    res.render('OTP.ejs',{ messages: req.flash('error') });
 });
 app.get("/",(req,res)=>{

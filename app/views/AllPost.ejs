@@ -53,9 +53,10 @@
                     <div class="card-body">
                       <h5 class="card-title "><b><%- posts[i].title %></b></h5>
                       <!-- <p class="card-text"><%- posts[i].content %></p> -->
-                      <span class="d-inline-block text-truncate" style="max-width: 150px;">
-                        <!-- <%- posts[i].content %> -->
-                      </span>
+                      <p class="card-text" style="height: 50px; overflow: hidden;"><%- posts[i].summary %></p>
+                      
+                                                                                          
+
                     </div>
                   </div>
                 </div>
@@ -101,6 +102,19 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
       <script>
+        function createTagAnchors(tags, id) {
+          const maxTagsToShow = 3;
+          const cleanedTags = tags.split(',').map(tag => tag.trim());
+          const uniqueValues = [...new Set(cleanedTags)];
+          const visibleTags = uniqueValues.slice(0, maxTagsToShow);
+          const tagAnchors = [];
+          tagAnchors.push(...visibleTags.map(tag => `<a href="http://localhost:3001/post/bytag/${tag}">#${tag}</a>`));
+          if (uniqueValues.length > maxTagsToShow) {
+            const remainingCount = uniqueValues.length - maxTagsToShow;
+            tagAnchors.push(`<a  href="http://localhost:3001/post/byid/${id}">+${remainingCount}</a>`);
+          }
+          return tagAnchors.join(' ');
+        }
         window.onload = function getAllPost() {
           document.getElementById('all-post').addEventListener('click', function (event) {
             const cardElement = event.target.closest('.card');
@@ -111,7 +125,9 @@
               }
             }
           });
+
         }
+
       </script>
 </body>
 

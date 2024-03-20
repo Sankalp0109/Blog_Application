@@ -8,6 +8,8 @@ const key = crypto.randomBytes(32);
 const algorithm = "aes-256-cbc";
 const Filter = require('bad-words');
 const profanity = require("profanity-hindi");
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 const createBlogPost = async (req, res) => {
@@ -150,9 +152,15 @@ const getPostByCategory = async (req, res) => {
       },
       include: Category,
     });
-    console.log(postsWithCategory);
+    // console.log(postsWithCategory);
+    if(postsWithCategory.length == 0){
+      const category = await Category.findByPk(id);
+      return res.render('AllPost', { posts: postsWithCategory, category: category?.CategoryName });
+    }
+    else{
+      return res.render('AllPost', { posts: postsWithCategory, category: postsWithCategory[0]?.Category?.CategoryName  });
+    }
 
-    res.render('AllPost', { posts: postsWithCategory, category: postsWithCategory[0]?.Category?.CategoryName });
   } catch (error) {
     console.error('Error fetching posts by tag:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -257,7 +265,7 @@ const addComment = async (req, res) => {
   console.log(req.body);
 
   const params = new URLSearchParams();
-  params.append('secret', '6Ld9aokpAAAAAOwjM4GkKIQqkzyVXAcssTsCGJY5');
+  params.append('secret', process.env.RECAPTCHA_KEY);
   params.append('response', req.body['g-recaptcha-response']);
   params.append('remoteip', req.ip);
   try {

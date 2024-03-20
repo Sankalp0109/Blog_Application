@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -145,9 +145,9 @@
                       tagAnchors.push(...visibleTags.map(tag => `<a href="http://localhost:3001/post/bytag/${tag}">#${tag}</a>`));
                       if (uniqueValues.length > maxTagsToShow) {
                         const remainingCount = uniqueValues.length - maxTagsToShow;
-                        tagAnchors.push(`<a href="http://localhost:3001/post/byid/${id}">+${remainingCount}</a>`);
+                        tagAnchors.push(`<a  href="http://localhost:3001/post/byid/${id}">+${remainingCount}</a>`);
                       }
-                      return tagAnchors;
+                      return tagAnchors.join(' ');
                     }
 
 
