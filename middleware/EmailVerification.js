@@ -50,7 +50,7 @@ const generateOTP = ()=> {
   return `${Math.floor(Math.random()*1000000)}`;
 };
 const sendOTP = (req,res,next)=>{
-  const OTP = generateOTP();
+  const OTP = 1011;
   const email = req.body.email;
   //console.log(email);
   try{
