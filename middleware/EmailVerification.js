@@ -54,7 +54,7 @@ const sendOTP = (req,res,next)=>{
   const email = req.body.email;
   //console.log(email);
   try{
-  sendOTPEmail(email,OTP);
+  //sendOTPEmail(email,OTP);
   otp = OTP;
   req.session.otp = OTP;
   console.log('OTP saved in session:', req.session.otp);
